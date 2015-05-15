@@ -38,11 +38,13 @@ def main():
     pos_x=[]
     pos_y=[]
     pos_z=[]
+    pos_vals = []
     neg_x=[]
     neg_y=[]
     neg_z=[]
+    neg_vals = []
 
-    c_sparse=1
+    c_sparse=10
     #c_sparse sets how many values are skipped when plotting
     #along the x and z ranges (y has been left alone so far)
     for i_y in range(len(y_array_indices)):
@@ -56,19 +58,19 @@ def main():
                     pos_x.append(np.log10(np.mean(x_array[x_array_indices[i_x:i_x+c_sparse]])))
                     pos_y.append(y_array[y_array_indices[i_y]])
                     pos_z.append(np.mean(z_array[z_array_indices[i_z:i_z+c_sparse]]))
-
+		    pos_vals.append(mean_mu)
                 #Don't worry about mean == 0
 
                 if mean_mu < 0:
                     neg_x.append(np.log10(np.mean(x_array[x_array_indices[i_x:i_x+c_sparse]])))
                     neg_y.append(y_array[y_array_indices[i_y]])
                     neg_z.append(np.mean(z_array[z_array_indices[i_z:i_z+c_sparse]]))
-
+		    neg_vals.append(abs(mean_mu))
     #Add two scatter plots to our set of axes,
     #one of the positive values,
-    ps = ax.scatter(pos_x,pos_y,pos_z,s=50,c='g',marker='^')
+    ps = ax.scatter(pos_x,pos_y,pos_z,s=50,c=pos_vals, marker='^', cmap=cm.Blues)
     #and one of the negative values
-    ns = ax.scatter(neg_x,neg_y,neg_z,s=50,c='r',marker='v')
+    ns = ax.scatter(neg_x,neg_y,neg_z,s=50,c=neg_vals, marker='v', cmap=cm.OrRd)
 
 
 
@@ -78,9 +80,9 @@ def main():
     ax.set_ylim3d(y_array[y_array_indices[0]],y_array[y_array_indices[-1]])
     ax.set_zlim3d(z_array[z_array_indices[0]],z_array[z_array_indices[-1]])
 
-    ax.set_xlabel('Log_x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
+    ax.set_xlabel('$Log_{10}(x)$')
+    ax.set_ylabel('$y$')
+    ax.set_zlabel('$z$')
     ax.set_title('Difference plot')
 
     fig.savefig('figure1.png')
